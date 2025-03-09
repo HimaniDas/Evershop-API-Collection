@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "7d252a0c-f4c0-4bb2-8915-7755d5bf3c3d",
+		"name": "Evershop_API_Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41536799"
+	},
+	"item": [
+		{
+			"name": "search",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"searchText\", \"nike react\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//pm.test(\"validate status code is 200\", function(){\r",
+							"//pm.response.to.have.status(200);\r",
+							"//});\r",
+							"//console.log(pm.response.code);\r",
+							"\r",
+							"//validate the status code:\r",
+							"pm.test(\"verify the response status code is 200\", function(){\r",
+							"    pm.expect(200).to.eql(pm.response.code);\r",
+							"});\r",
+							"\r",
+							"//check success:true\r",
+							"//console.log(pm.response.json()); //--- response body check\r",
+							"\r",
+							"var responseBody = pm.response.json(); // responsebody save into variable/define\r",
+							"pm.test(\"verify the response body's success value is true\", function(){\r",
+							"    pm.expect(true).to.eql(responseBody.success);\r",
+							"});\r",
+							"//console e serach er product read - responsebody r vitore json body ache. name ta jekhane pabo tar upor parent check\r",
+							"//console.log(responseBody.eContext.graphqlResponse.e248uix4m5ibqamf.items[0].name);\r",
+							"\r",
+							"//read/verify the search one product\r",
+							"pm.test(\"verify the response body contains valid product name\", function(){\r",
+							"    const expectedProduct = \"Nike react phantom run flyknit 2\"\r",
+							"    pm.expect(expectedProduct).to.eql(responseBody.eContext.graphqlResponse.e248uix4m5ibqamf.items[0].name);\r",
+							"    pm.collectionVariables.set(\"productname\", responseBody.eContext.graphqlResponse.e248uix4m5ibqamf.items[0].name);//save into variable for future\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"items\",responseBody.eContext.graphqlResponse.e248uix4m5ibqamf.items)//save items into variable \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://demo.evershop.io/search?keyword={{searchText}}&ajax=true",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"evershop",
+						"io"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "{{searchText}}"
+						},
+						{
+							"key": "ajax",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "prev_cart view",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseBody = pm.response.json();\r",
+							"if(responseBody.eContext.graphqlResponse.e248uix4m5ibqb7y==null){\r",
+							"    pm.collectionVariables.set(\"prev_qty\", 0)\r",
+							"}\r",
+							"else{\r",
+							"    pm.collectionVariables.set(\"prev_qty\", responseBody.eContext.graphqlResponse.e248uix4m5ibqb7y.totalQty)\r",
+							"}\r",
+							"    pm.test(\"verify the response status code is 200\", function(){\r",
+							"    pm.expect(200).to.eql(pm.response.code);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://demo.evershop.io/cart?ajax=true",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"evershop",
+						"io"
+					],
+					"path": [
+						"cart"
+					],
+					"query": [
+						{
+							"key": "ajax",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addproduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//const itemsList = pm.collectionVariables.get(\"items\");//get the itemslist from items\r",
+							"//console.log(itemsList)//check the all data from itemslist\r",
+							"//console.log(itemsList[0].sku)//check sku first item 0\r",
+							"\r",
+							"function getRandomInt(min,max){\r",
+							"    const minCeiled = Math.ceil(min);\r",
+							"    const maxFloored = Math.floor(max);\r",
+							"    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);\r",
+							"}// random value pick method(integer type)\r",
+							"//console.log(getRandomInt(0,3))//different value shows for each run\r",
+							"const index = getRandomInt(0,3);//for sku, 0 because of array index\r",
+							"const qty = getRandomInt(1,3);//for quantity\r",
+							"console.log(\"qty: \", +qty);\r",
+							"const itemsList = pm.collectionVariables.get(\"items\");\r",
+							"//console.log(itemsList[0].sku)//shows 1st sku no \r",
+							"//console.log(itemsList[index].sku)//shows the random product in console\r",
+							"\r",
+							"pm.collectionVariables.set(\"selected_sku\", itemsList[index].sku);//variable is named by selected sku which contains items\r",
+							"pm.collectionVariables.set(\"selected_qty\", qty);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"verify the response status code is 200\", function(){\r",
+							"    pm.expect(200).to.eql(pm.response.code);\r",
+							"});\r",
+							"\r",
+							"var responseBody = pm.response.json();\r",
+							"pm.test(\"verify product_sku\", function(){\r",
+							"    const actual_sku = responseBody.data.item.product_sku;\r",
+							"    const expected_sku = pm.collectionVariables.get(\"selected_sku\");\r",
+							"    pm.expect(expected_sku).to.eql(actual_sku);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"verify product quantity\", function(){\r",
+							"    const expected_qty = pm.collectionVariables.get(\"selected_qty\");\r",
+							"    const actual_qty = responseBody.data.item.qty;// Get actual quantity from response\r",
+							"    pm.expect(expected_qty).to.eql(actual_qty);// Compare expected vs. actual\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sku\": \"{{selected_sku}}\",\r\n    \"qty\": \"{{selected_qty}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demo.evershop.io/api/cart/mine/items?ajax=true",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"evershop",
+						"io"
+					],
+					"path": [
+						"api",
+						"cart",
+						"mine",
+						"items"
+					],
+					"query": [
+						{
+							"key": "ajax",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post_cart view",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"verify the response status code is 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var responseBody = pm.response.json();\r",
+							"pm.test(\"verify cart's total quantity\", function(){\r",
+							"    const expected_qty = pm.collectionVariables.get(\"prev_qty\") + pm.collectionVariables.get(\"selected_qty\");\r",
+							"    const actual_qty = responseBody.eContext.graphqlResponse.e248uix4m5ibqb7y.totalQty;\r",
+							"    pm.expect(expected_qty).to.eql(actual_qty);\r",
+							"});\r",
+							"\r",
+							"const cartURL = responseBody.eContext.graphqlResponse.e248uix4m5ibqb7y.items[0].updateQtyApi;\r",
+							"//console.log(cartURL)//for checking\r",
+							"pm.collectionVariables.set(\"cart_url\", cartURL);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://demo.evershop.io/cart?ajax=true",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"evershop",
+						"io"
+					],
+					"path": [
+						"cart"
+					],
+					"query": [
+						{
+							"key": "ajax",
+							"value": "true"
+						}
+					]
+				},
+				"description": "This endpoint makes an HTTP GET request to retrieve the contents of the shopping cart from the specified URL. The response returned a status code of 200 and a JSON object containing various properties related to the success of the request and the context of the e-commerce platform. The user specifically wants to know how a TypeError was fixed, but based on the provided response, there is no explicit mention of a TypeError or its fix. Therefore, it is not possible to explain how the TypeError was fixed based on the provided response."
+			},
+			"response": []
+		},
+		{
+			"name": "remove",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://demo.evershop.io{{cart_url}}",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"evershop",
+						"io{{cart_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "searchText",
+			"value": ""
+		},
+		{
+			"key": "productname",
+			"value": ""
+		},
+		{
+			"key": "items",
+			"value": ""
+		},
+		{
+			"key": "selected_sku",
+			"value": ""
+		},
+		{
+			"key": "selected_qty",
+			"value": ""
+		},
+		{
+			"key": "prev_qty",
+			"value": ""
+		},
+		{
+			"key": "cart_url",
+			"value": ""
+		}
+	]
+}
